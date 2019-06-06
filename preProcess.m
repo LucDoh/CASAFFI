@@ -8,10 +8,10 @@
 %fname = 'BeRST_Tifs/BeRST_1Long-STIM10V_1x1_14msExpo_1.tif';
 %preProcess(fname)
 
-function s = preProcess(fname)
+function s = preProcess(fname, threshold)
 avgfName = strcat(erase(fname,'.tif'), '_AvgFiring.tif');
 s = avgfName;
-subtract_Min = false;
+subtract_Min = true;
 
 iStack = getImgStack(fname);
 imwrite(mat2gray(iStack(:,:,1)),strcat(erase(fname,'.tif'), '_frame1.tif'))
@@ -29,8 +29,8 @@ minimumAvg = min(avgIntensity_perFrame);
 if(subtract_Min)
   avgIntensity_perFrame = avgIntensity_perFrame - minimumAvg;
 end
-%Get value s.t. that 80% of the array is smaller
-thresh = prctile(avgIntensity_perFrame, 0)%80); %Leaving this at 0 is bad...
+%Get value s.t. that 80% of the array is smaller %if t==0, t=70; end
+thresh = prctile(avgIntensity_perFrame, threshold);%80); %Leaving this at 0 is bad...
 avgFiringImage = zeros(sz(1),sz(2)); % 2D array that will be filled with avgs
 numF=0;
 for t=1:sz(3)
@@ -40,9 +40,10 @@ for t=1:sz(3)
     end
 end
 
-avgFiringImage = avgFiringImage/numF %Normalize by number of frames stacked
-avgFiringImage = medfilt2(avgFiringImage)
-imwrite(mat2gray(avgFiringImage),avgfName)
+avgFiringImage = avgFiringImage/numF; %Normalize by number of frames stacked
+%avgFiringImage = imadjust(avgFiringImage);
+avgFiringImage = medfilt2(avgFiringImage);
+imwrite(mat2gray(avgFiringImage),avgfName);
  % Write to .tif file
 
 %Plotting:

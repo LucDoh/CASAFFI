@@ -1,5 +1,7 @@
-% Given a label matrix, csv of timeseries, and number m
-function z = hotNCells(csvName, L, k)
+% STEP 5: Get "hottest" cells:
+% Given a label matrix L, csv of timeseries, and number of cells k,
+% plot the k most active cells
+function hotCellList = hotNCells(csvName, L, k)
 f_cells_t = csvread(csvName);
 
 [m,n] = size(f_cells_t);
@@ -18,28 +20,16 @@ meanActivity = mean(f_cells_t_Mov,2);
 
 [x,y] = size(L);
 C = zeros(x,y);
-size(L)
-size(C)
-disp(I)
-%This is dumb af but rn can't get matrix dimensions to work out in loop
-C(L==I(1))=1;
-C(L==I(2))=1;
-C(L==I(3))=1;
-C(L==I(4))=1;
-C(L==I(5))=1;
-C(L==I(6))=1;
-
+%size(L); size(C); disp(I)
+%Loop through k most active cells to plot them
+for l=1:k
+    C(L==I(l))=1;
+end
 imshow(C)
-%for i=I
-%disp(i)
-%C(L==i)=1;
- 
-%end
+hotCellList = I;
 %imwrite('this.tif',C)
 %csvMov = strcat(erase(csvName,'.csv'), '_MovAvg.csv');
 %csvwrite(csvName,delta_f_Mov)
-
-
 end
 
 

@@ -1,19 +1,43 @@
-% This has been tested and works pretty well on 
-% HEK-NK_ACSF_2018_08_31.tif, TIF stack from HEK
-% cells with BeRST dye on the spinning disk.
-% minSize and maxSize are bounds on the sizes in
-% pixels, for cells to be segmented.
+% -- Main script V5 --
+% Runs framework for preprocessing, segmentation, computing delta_f/f and
+% visualization to extract from fluorescent images electrical activity of
+% cells dyed with BeRST.
 
-%What is cellsize, FOV. Use that to create limits on size.
-function s = runAll(fname, minSize, maxSize, sens)
-if(maxSize == 0)
-    minSize = 500;
-    maxSize = 3000;
-end
+% To run this code, the TIF file should be in the parent directory, in a dir
+% named data. i.e. ../data
 
-avgfName = preProcess(fname);
-[L, n] = segmentL(avgfName,minSize,maxSize, sens);%('segmentationCode/seg_Skel_Qixin.tif',minSize,maxSize);
-csvName = usingSegmAnalysis(fname,L);
-plot_fCells(csvName);
-hotNCells(csvName, L, 10);
+% This has been tested on HEK-NK_ACSF_2018_08_31.tif, 6e6ACSF_0ms_3_MMStack.tif.
+
+% *fname: name of TIF stack. 
+% *minSize/maxSize bound the size (in pixels) of the identified cells.
+% *sens: threshold of binarization: higher means more will be 1, thus 
+% more boundaries/walls, and  more smaller cells identified BUT biased towards
+% *overidentifying [0.5-0.8]
+% *threshold: the % cutoff for a 'firing frame' in preprocessing. The lower
+% this is, the more frames are averaged over for segmentation img [20-90]
+
+function s = runAll(fname, minSize, maxSize, sens, threshold)
+
+% minSize = 500, maxSize = 3000, sens=0.6 work well for spinning disk
+
+% STEPs 1/2 - If there exists a better quality imagestack of the same FOV 
+% as fname, this can be passed to preProcess segmentL instead.
+avgfName = preProcess(fname, threshold);
+[L, n, L_holes, csvName_Centr] = segmentL(avgfName,minSize, maxSize, sens);
+
+m=input(strcat(int2str(n),' cell have been found, would you like to continue analysis? [y/n]'),'s');
+if m=='n', return; end
+
+% STEP 3 - Get fluorescent traces, perform bgd subtraction
+fcsvName = usingSegmAnalysis(fname, L, L_holes);
+% STEP 4 - Compute DF/Fs, outputs csv of DF/F and plots. 
+dFF_csvName = plot_dFF(fcsvName, 50); %15 frame moving average
+hotCellList = hotNCells(fcsvName, L, int16(n/10)); % STEP 5
+display(hotCellList)
+% STEP 6 - Spike inference using z-score of 1.5 and above
+% Third argument of m means every m cells are shown in spike raster plot.
+[~,csv_Spikes] = getSpikes(dFF_csvName, 2, 1); %m=3 
+
+% STEP 7 - Finally, make a video of cell spiking activity. 
+makeViz(csvName_Centr, csv_Spikes)
 end
