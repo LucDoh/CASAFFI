@@ -3,9 +3,7 @@
 % visualization to extract from fluorescent images electrical activity of
 % cells dyed with BeRST.
 
-% To run this code, the TIF file should be in the parent directory, in a dir
-% named data. i.e. ../data
-
+% Example usage: runAll('../data/6e6ACSF_0ms_3_MMStack.tif',70,2000,0.7,70) 
 % This has been tested on HEK-NK_ACSF_2018_08_31.tif, 6e6ACSF_0ms_3_MMStack.tif.
 
 % *fname: name of TIF stack. 
