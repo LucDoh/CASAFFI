@@ -9,7 +9,8 @@ and then a couple ways of visualizing this spiking activity.
 To run:
 runAll('../data/6e6ACSF_0ms_3_MMStack.tif',70,2000,0.7,70)
 
-where here the TIF stack to analyze is named "6e6ACSF_0ms_3_MMStack.tif".
+where here the TIF stack to analyze is named "6e6ACSF_0ms_3_MMStack.tif", and is found in
+a directory named data one directory above.
 
 More details at the top of runAll.m:
 

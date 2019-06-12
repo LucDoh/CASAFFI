@@ -1,96 +1,96 @@
-% STEP 3: Compute delta(F)/F 
+% STEP 3: Compute delta(F)/F
 % Using mask obtained from a TIF file idenmake csv where each line consists of comma-separated
 % fluorescences per frame for a specific cell
 
 % 1st - averaged bgd over all frames subtracted
 % 2nd - frame by frame bgd subtraction
 function csvName = usingSegmAnalysis(fname, L, L_holes)
-%fname = 'HEK-NK_ACSF_2018_08_31.tif';
-iStack = getImgStack(fname);
-sz = size(iStack);
-numFrames = sz(3);
-f_i = iStack(:,:,1); %Initial fluorescence
+  %fname = 'HEK-NK_ACSF_2018_08_31.tif';
+  iStack = getImgStack(fname);
+  sz = size(iStack);
+  numFrames = sz(3);
+  f_i = iStack(:,:,1); %Initial fluorescence
 
-% What if implement background subtraction frame-by-frame before computing 
-% DeltaF/F (04/15/19)
-booTest = false;
-if booTest==true
-    for i = 1:numFrames
-        A = iStack(:,:,i); A = imadjust(mat2gray(A));
-        bgd = imopen(A,strel('disk',15)); iStack(:,:,i) = A-bgd;
-    end
-    figure;
-    imshowpair(f_i, iStack(:,:,1),'montage')
-    title('Bgd subtracted vs not');
-end
-%%%%%%%%%%Get mask from Fogbank-segmentation%%%%%%%%%%%%%%%%%%%
-%iMask = imread('segm_HEK-NK_ACSF_2018_08_31_AvgFiring.tif');
-%saveas(gcf,'segmented_Colors.jpg')
+  % What if implement background subtraction frame-by-frame before computing
+  % DeltaF/F (04/15/19)
+  booTest = false;
+  if booTest==true
+      for i = 1:numFrames
+          A = iStack(:,:,i); A = imadjust(mat2gray(A));
+          bgd = imopen(A,strel('disk',15)); iStack(:,:,i) = A-bgd;
+      end
+      figure;
+      imshowpair(f_i, iStack(:,:,1),'montage')
+      title('Bgd subtracted vs not');
+  end
+  %%%%%%%%%%Get mask from Fogbank-segmentation%%%%%%%%%%%%%%%%%%%
+  %iMask = imread('segm_HEK-NK_ACSF_2018_08_31_AvgFiring.tif');
+  %saveas(gcf,'segmented_Colors.jpg')
 
-% Get fluorescence per frame for each celland for each background region
-f_cells_t = calcFperCell(numFrames, L, iStack);
-% Two methods of background subtraction, yielding:
-% 1) f_background_t and 2) f_bgd_iter
-f_holes_t = calcFperCell(numFrames, L_holes, iStack);
-f_background_t = min(f_holes_t); %was mean()
+  % Get fluorescence per frame for each celland for each background region
+  f_cells_t = calcFperCell(numFrames, L, iStack);
+  % Two methods of background subtraction, yielding:
+  % 1) f_background_t and 2) f_bgd_iter
+  f_holes_t = calcFperCell(numFrames, L_holes, iStack);
+  f_background_t = min(f_holes_t); %was mean()
 
-p=0.25;
-f_bgd_iter = zeros(1,numFrames);
-for j = 1:numFrames
-    ij = iStack(:,:,j);
-    f_bgd_iter(j) = prctile(ij(:), p);
-end
-f_background_t_p = prctile(f_holes_t, p,1);
+  p=0.05; %This is the percentile for which we will define background.
+  f_bgd_iter = zeros(1,numFrames);
+  for j = 1:numFrames
+      ij = iStack(:,:,j);
+      f_bgd_iter(j) = prctile(ij(:), p);
+  end
+  f_background_t_p = prctile(f_holes_t, p,1);
 
-%PLOTTING
-figure
-plot(f_background_t)
-title(['Min background F'])
-figure
-plot(f_background_t_p)
-title(['pth Percentile background F'])
-figure
-plot(f_bgd_iter)
-title(['pth Percentile (iter) background F'])
-figure
-plot(max(f_cells_t))
-title(['Max Cell F'])
-figure
-plot(max(f_cells_t))
-title(['Mean Cell F'])
-figure
-plot(f_cells_t')
-title(['All Cell F'])
+  %PLOTTING
+  figure
+  plot(f_background_t)
+  title(['Min background F'])
+  figure
+  plot(f_background_t_p)
+  title(['pth Percentile background F'])
+  figure
+  plot(f_bgd_iter)
+  title(['pth Percentile (iter) background F'])
+  figure
+  plot(max(f_cells_t))
+  title(['Max Cell F'])
+  figure
+  plot(max(f_cells_t))
+  title(['Mean Cell F'])
+  figure
+  plot(f_cells_t')
+  title(['All Cell F'])
 
-% Testing, if !work revert f_cells_t:
-% Subtract the average background fluorescence per fram e
-out = bsxfun(@minus,f_cells_t,f_bgd_iter);%f_background_t);
-f_cells_t = out;
+  % Testing, if !work revert f_cells_t:
+  % Subtract the average background fluorescence per fram e
+  out = bsxfun(@minus,f_cells_t,f_bgd_iter);%f_background_t);
+  f_cells_t = out;
 
-%Use sample std and standardize along rows
-%z_cells_t = zscore(f_cells_t(:));
+  %Use sample std and standardize along rows
+  %z_cells_t = zscore(f_cells_t(:));
 
-%csvwrite('Subrtacted-adhoc.csv', out);
-figure
-plot(f_cells_t')
-title(['All Cell F, bgd subtracted'])
+  %csvwrite('Subrtacted-adhoc.csv', out);
+  figure
+  plot(f_cells_t')
+  title(['All Cell F, bgd subtracted'])
 
-csvName = strcat('csvs/',erase(fname,'../data'));
-csvName = strcat(erase(csvName,'.tif'), '_f_t_cells.csv');
-csvwrite(csvName,f_cells_t);
-csvwrite('csvs/HEK-background_adhoc.csv',f_background_t);
+  csvName = strcat('csvs/',erase(fname,'../data'));
+  csvName = strcat(erase(csvName,'.tif'), '_f_t_cells.csv');
+  csvwrite(csvName,f_cells_t);
+  csvwrite('csvs/HEK-background_adhoc.csv',f_background_t);
 end
 
 %%%%%%%%%%%%HELPER FUNCTIONS%%%%%%%%%%%%%%%%%%
 %Make image stack:
 function [imgStack] = getImgStack(fname)
-info = imfinfo(fname);
-n = length(info);
-imgStack = [];
-for i=1:n
-    img = imread(fname,i, 'Info', info);
-    imgStack(:,:,i) = img;
-end
+  info = imfinfo(fname);
+  n = length(info);
+  imgStack = [];
+  for i=1:n
+      img = imread(fname,i, 'Info', info);
+      imgStack(:,:,i) = img;
+  end
 
 end
 
@@ -115,7 +115,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Using numCells, numFrame, IMask, iStack
 function f_cells_t = calcFperCell(numFrames, iMask, iStack)
-        
+
 numCells = max(iMask(:)); %64
 
 f_cells_t = zeros(numCells,numFrames); % 64 x 208

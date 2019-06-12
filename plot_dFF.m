@@ -16,30 +16,30 @@ function dFF_csvName = plot_dFF(csvName, m)
     cells = [1,2,3,4,5,6,7,8,9,10];
     figure
     for c=cells
-        fPlot(c, csvName, m)
+        fPlot(c, csvName, m);
     end
     figure
 end
 
 function [] = fPlot(i, csvName, m)
-f_cells_t = csvread(csvName);
-f_t = f_cells_t(i,:);
+  f_cells_t = csvread(csvName);
+  f_t = f_cells_t(i,:);
 
-%Compute Delta(F)/F 
-[f_o, movAvg_f, delta_f,delta_f_Mov] = deltaFCalc(f_t, m);
-%Define file names
-filename = strcat(int2str(i),'cell_f.tif')
-filename_Mov = strcat(int2str(i), 'cell_f_Mov.tif')
-dirfname = strcat('dir_plots/',filename)
-dirfname_Mov = strcat('dir_plots/',filename_Mov)
+  %Compute Delta(F)/F
+  [f_o, movAvg_f, delta_f,delta_f_Mov] = deltaFCalc(f_t, m);
+  %Define file names
+  filename = strcat(int2str(i),'cell_f.tif');
+  filename_Mov = strcat(int2str(i), 'cell_f_Mov.tif');
+  dirfname = strcat('dir_plots/',filename);
+  dirfname_Mov = strcat('dir_plots/',filename_Mov);
 
-%plot(delta_f/f_o); saveas(gcf,dirfname)
-figure
-plot(delta_f_Mov./movAvg_f)
-axis([0 length(movAvg_f) -0.5 0.5])
-xlabel('Frames')
-ylabel('\Delta F/F')
-saveas(gcf, dirfname_Mov)
+  %plot(delta_f/f_o); saveas(gcf,dirfname)
+  figure
+  plot(delta_f_Mov./movAvg_f)
+  axis([0 length(movAvg_f) -0.5 0.5])
+  xlabel('Frames')
+  ylabel('\Delta F/F')
+  saveas(gcf, dirfname_Mov)
 end
 
 function [f_o, movAvg_f, delta_f,delta_f_Mov] = deltaFCalc(f_t, m)
@@ -52,6 +52,6 @@ movAvg_f = movmedian(f_t(:),m);
 delta_f_Mov = f_t(:) - movAvg_f;
 
 % Poss improvements:
-%* Could try a moving window with lower percentile (Sylvester uses 10-25%)
 %* Moving average should disclude spikes (anything above a zscore of 1.5)
+%* Could try a moving window with lower percentile (Sylvester uses 10-25%)
 end
