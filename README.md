@@ -4,7 +4,7 @@ This is a cell segmentation and analysis code written in Matlab for obtaining De
 traces from a TIF stack of fluorescent images, and infer electrical activity of the
 identified cells. Running runAll.m will run the scripts in order to pre-process, segment
 cells, perform background subtraction, infer electrical activity on a cell-by-cell basis,
-and then a couple ways of visualizing this spiking activity.
+and then visualize the electrical activity of the cells.
 
 To run:
 runAll('../data/6e6ACSF_0ms_3_MMStack.tif',70,2000,0.7,70)
