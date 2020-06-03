@@ -1,4 +1,4 @@
-# Cell Analysis & Segmentation Framework for Fluorescent Images
+# Cell Analysis & Segmentation for Fluorescent Images
 
 CASAFFI is a cell segmentation and analysis code written in Matlab to infer electrical activity of cells using BeRST, a voltage-sensitive dye.
 Increases in voltage in cells are reflected by a linear increase in fluorescence in BeRST, so (Delta F/ F). This means we can use take stacks of fluorescent images with a microscope at high framerate and resolution, process these images, and see neurons fire.
