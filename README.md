@@ -20,4 +20,4 @@ Steps:
 Run by calling the main script which itself will runs individual steps:  
 _**runAll('../data/6e6ACSF_0ms_3_MMStack.tif',70,2000,0.7,70)**_
 
-here we point to the TIF stack *6e6ACSF_0ms_3_MMStack.tif* and pass other image processing parameters. More details at in runAll.m. 
+here we point to the TIF stack *6e6ACSF_0ms_3_MMStack.tif* and pass other image processing parameters. More details and comments in runAll.m. 
