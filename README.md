@@ -17,6 +17,7 @@ Steps:
 
 
 Running:  
+
 Run by calling the main script which itself will runs individual steps:  
 
 _**runAll('../data/6e6ACSF_0ms_3_MMStack.tif',70,2000,0.7,70)**_
