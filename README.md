@@ -1,12 +1,10 @@
 # Cell Analysis & Segmentation Framework for Fluorescent Images
 
 CASAFFI is a cell segmentation and analysis code written in Matlab to infer electrical activity of cells using BeRST, a voltage-sensitive dye.
+Increases in voltage in cells are reflected by a linear increase in fluorescence in BeRST, so (Delta F/ F). This means we can use take stacks of fluorescent images with a microscope at high framerate and resolution, process these images, and see neurons fire.
 
 
-Increases in voltage in cells are reflected by an increase in fluorescence in BeRST, F, and can be directly captured by the linear relationship with (Delta F/ F). This means we can use take stacks of fluorescent images with a microscope at high framerate and resolution, process these images, and see neurons fire.
-
-
-Delta F/F traces are constructed from a TIF stack of fluorescent images and after several steps, we infer and visualize the electrical activity from the cells. We can then use a rule-based method when working with neurons to label spikes, AKA neuronal firing.   
+Delta F/F traces are constructed from a TIF stack of fluorescent images and after several steps, we infer and visualize the electrical activity from the cells. We can then use a rule-based method (e.g. z-score > 1.5) to label spikes when looking at neurons, AKA neuronal firing.   
 
 
 Steps:
@@ -19,14 +17,7 @@ Steps:
 
 
 
-runAll.m calls the scripts which each perform each step. 
-
-
-
-To run:
+To run, call the main script which will run all the steps: 
 runAll('../data/6e6ACSF_0ms_3_MMStack.tif',70,2000,0.7,70)
 
-where here the TIF stack to analyze is named "6e6ACSF_0ms_3_MMStack.tif", and is found in
-a directory named data one directory above.
-
-More details at the top of runAll.m. 
+where here we point to the TIF stack "6e6ACSF_0ms_3_MMStack.tif and pass other image processing parameters. More details at in runAll.m. 
