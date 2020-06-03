@@ -18,6 +18,6 @@ Steps:
 
 
 To run, call the main script which will run all the steps:  
-runAll('../data/6e6ACSF_0ms_3_MMStack.tif',70,2000,0.7,70)
+_**runAll('../data/6e6ACSF_0ms_3_MMStack.tif',70,2000,0.7,70)**_
 
 where here we point to the TIF stack "6e6ACSF_0ms_3_MMStack.tif and pass other image processing parameters. More details at in runAll.m. 
