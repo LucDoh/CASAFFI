@@ -8,6 +8,7 @@ Increases in voltage in cells are reflected by a linear increase in fluorescence
 
 After segmentation and background subtraction, Delta F/F traces are made from a (TIF) stack of fluorescent images and after several steps, we infer and visualize the electrical activity from the cells. We can then use a rule-based method (e.g. z-score > 1.5) to label spikes when looking at neurons, AKA neuronal firing.   
 
+***
 
 ### Steps:
 1) Pre-process the image
@@ -16,11 +17,11 @@ After segmentation and background subtraction, Delta F/F traces are made from a 
 4) Map electrical activity in cells from change in fluorescence
 5) Visualize activity
 
-
+***
 
 ### Running:  
 
-Run by calling the main script which itself will runs individual steps:  
+Call the main Matlab script, with parameters:  
 
 _**runAll('../data/6e6ACSF_0ms_3_MMStack.tif',70,2000,0.7,70)**_
 
